@@ -1,7 +1,7 @@
 
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 const suits = ["HEARTS", "DIAMONDS", "CLUBS", "SPADES"];
 const values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "JACK", "QUEEN", "KING", "ACE"];
@@ -94,6 +94,19 @@ function generateHand(type) {
     default: return null;
   }
 }
+
+app.get('/', (req, res) => {
+  res.json({ 
+    message: "Welcome to the Poker Hand Test API",
+    description: "Generate poker hands for testing purposes",
+    endpoint: "/pokerhandtest/{handtype}",
+    available_hands: [
+      "royalflush", "straightflush", "fourofakind", "fullhouse", 
+      "flush", "straight", "threeofakind", "twopair", "onepair", 
+      "highcard", "random"
+    ]
+  });
+});
 
 app.get('/pokerhandtest/:hand', (req, res) => {
   const hand = req.params.hand.toLowerCase();
