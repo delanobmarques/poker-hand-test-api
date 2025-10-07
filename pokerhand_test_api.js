@@ -1,7 +1,11 @@
 
 const express = require('express');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Enable CORS for all routes
+app.use(cors());
 
 const suits = ["HEARTS", "DIAMONDS", "CLUBS", "SPADES"];
 const values = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "JACK", "QUEEN", "KING", "ACE"];
