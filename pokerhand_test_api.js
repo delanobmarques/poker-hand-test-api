@@ -39,24 +39,38 @@ function generateHand(type) {
     }
     case 'straightflush': {
       const suit = getRandom(suits);
-      // Ensure we can get 5 consecutive cards (values array has 13 elements, so max start is 8)
-      const maxStart = values.length - 5; // 13 - 5 = 8
-      const start = Math.floor(Math.random() * (maxStart + 1)); // 0 to 8
-      return values.slice(start, start + 5).map(v => createCard(v, suit));
+      // Define all possible straights including Ace-low (A-2-3-4-5)
+      const straights = [];
+      
+      // Regular straights (2-3-4-5-6 through 10-J-Q-K-A)
+      for (let i = 0; i <= values.length - 5; i++) {
+        straights.push(values.slice(i, i + 5));
+      }
+      
+      // Add Ace-low straight (A-2-3-4-5)
+      straights.push(["ACE", "2", "3", "4", "5"]);
+      
+      const selectedStraight = getRandom(straights);
+      console.log('STRAIGHTFLUSH DEBUG - selected straight:', selectedStraight, 'suit:', suit);
+      return selectedStraight.map(v => createCard(v, suit));
     }
     case 'fourofakind': {
       const value = getRandom(values);
       const fourSuits = getSample(suits, 4);
       const kickerValue = getRandom(values.filter(v => v !== value));
       const kickerSuit = getRandom(suits);
-      return fourSuits.map(s => createCard(value, s)).concat(createCard(kickerValue, kickerSuit));
+      const allCards = fourSuits.map(s => createCard(value, s)).concat(createCard(kickerValue, kickerSuit));
+      // Shuffle the cards so they're not sorted
+      return allCards.sort(() => 0.5 - Math.random());
     }
     case 'fullhouse': {
       const tripleValue = getRandom(values);
       const pairValue = getRandom(values.filter(v => v !== tripleValue));
       const tripleSuits = getSample(suits, 3);
       const pairSuits = getSample(suits, 2);
-      return tripleSuits.map(s => createCard(tripleValue, s)).concat(pairSuits.map(s => createCard(pairValue, s)));
+      const allCards = tripleSuits.map(s => createCard(tripleValue, s)).concat(pairSuits.map(s => createCard(pairValue, s)));
+      // Shuffle the cards so they're not sorted
+      return allCards.sort(() => 0.5 - Math.random());
     }
     case 'flush': {
       const suit = getRandom(suits);
@@ -64,17 +78,28 @@ function generateHand(type) {
       return cards.map(v => createCard(v, suit));
     }
     case 'straight': {
-      // Ensure we can get 5 consecutive cards (values array has 13 elements, so max start is 8)
-      const maxStart = values.length - 5; // 13 - 5 = 8
-      const start = Math.floor(Math.random() * (maxStart + 1)); // 0 to 8
-      const cards = values.slice(start, start + 5);
-      return cards.map(v => createCard(v, getRandom(suits)));
+      // Define all possible straights including Ace-low (A-2-3-4-5)
+      const straights = [];
+      
+      // Regular straights (2-3-4-5-6 through 10-J-Q-K-A)
+      for (let i = 0; i <= values.length - 5; i++) {
+        straights.push(values.slice(i, i + 5));
+      }
+      
+      // Add Ace-low straight (A-2-3-4-5)
+      straights.push(["ACE", "2", "3", "4", "5"]);
+      
+      const selectedStraight = getRandom(straights);
+      console.log('STRAIGHT DEBUG - selected straight:', selectedStraight);
+      return selectedStraight.map(v => createCard(v, getRandom(suits)));
     }
     case 'threeofakind': {
       const value = getRandom(values);
       const suits3 = getSample(suits, 3);
       const kickers = getSample(values.filter(v => v !== value), 2);
-      return suits3.map(s => createCard(value, s)).concat(kickers.map(v => createCard(v, getRandom(suits))));
+      const allCards = suits3.map(s => createCard(value, s)).concat(kickers.map(v => createCard(v, getRandom(suits))));
+      // Shuffle the cards so they're not sorted
+      return allCards.sort(() => 0.5 - Math.random());
     }
     case 'twopair': {
       const pairValues = getSample(values, 2);
@@ -84,13 +109,17 @@ function generateHand(type) {
         cards.push(...suits2.map(s => createCard(v, s)));
       });
       const kickerValue = getRandom(values.filter(v => !pairValues.includes(v)));
-      return cards.concat(createCard(kickerValue, getRandom(suits)));
+      const allCards = cards.concat(createCard(kickerValue, getRandom(suits)));
+      // Shuffle the cards so they're not sorted
+      return allCards.sort(() => 0.5 - Math.random());
     }
     case 'onepair': {
       const value = getRandom(values);
       const suits2 = getSample(suits, 2);
       const kickers = getSample(values.filter(v => v !== value), 3);
-      return suits2.map(s => createCard(value, s)).concat(kickers.map(v => createCard(v, getRandom(suits))));
+      const allCards = suits2.map(s => createCard(value, s)).concat(kickers.map(v => createCard(v, getRandom(suits))));
+      // Shuffle the cards so they're not sorted
+      return allCards.sort(() => 0.5 - Math.random());
     }
     case 'highcard': {
       const cards = getSample(values, 5);
