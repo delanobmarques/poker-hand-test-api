@@ -39,7 +39,9 @@ function generateHand(type) {
     }
     case 'straightflush': {
       const suit = getRandom(suits);
-      const start = Math.floor(Math.random() * 9);
+      // Ensure we can get 5 consecutive cards (values array has 13 elements, so max start is 8)
+      const maxStart = values.length - 5; // 13 - 5 = 8
+      const start = Math.floor(Math.random() * (maxStart + 1)); // 0 to 8
       return values.slice(start, start + 5).map(v => createCard(v, suit));
     }
     case 'fourofakind': {
@@ -62,7 +64,9 @@ function generateHand(type) {
       return cards.map(v => createCard(v, suit));
     }
     case 'straight': {
-      const start = Math.floor(Math.random() * 9);
+      // Ensure we can get 5 consecutive cards (values array has 13 elements, so max start is 8)
+      const maxStart = values.length - 5; // 13 - 5 = 8
+      const start = Math.floor(Math.random() * (maxStart + 1)); // 0 to 8
       const cards = values.slice(start, start + 5);
       return cards.map(v => createCard(v, getRandom(suits)));
     }
