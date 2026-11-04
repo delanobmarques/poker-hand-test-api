@@ -30,7 +30,14 @@ function createCard(value, suit) {
 
 function generateHand(type) {
   const getRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
-  const getSample = (arr, n) => arr.sort(() => 0.5 - Math.random()).slice(0, n);
+  const getSample = (arr, n) => [...arr].sort(() => 0.5 - Math.random()).slice(0, n);
+  const createMixedSuitHand = (cardValues) => {
+    const cards = cardValues.map(value => createCard(value, getRandom(suits)));
+    if (cards.every(card => card.suit === cards[0].suit)) {
+      cards[4] = createCard(cardValues[4], getRandom(suits.filter(suit => suit !== cards[0].suit)));
+    }
+    return cards;
+  };
 
   switch(type) {
     case 'royalflush': {
@@ -91,7 +98,7 @@ function generateHand(type) {
       
       const selectedStraight = getRandom(straights);
       console.log('STRAIGHT DEBUG - selected straight:', selectedStraight);
-      return selectedStraight.map(v => createCard(v, getRandom(suits)));
+      return createMixedSuitHand(selectedStraight);
     }
     case 'threeofakind': {
       const value = getRandom(values);
@@ -122,11 +129,18 @@ function generateHand(type) {
       return allCards.sort(() => 0.5 - Math.random());
     }
     case 'highcard': {
-      const cards = getSample(values, 5);
-      return cards.map(v => createCard(v, getRandom(suits)));
+      let cards;
+      let sortedRanks;
+      do {
+        cards = getSample(values, 5);
+        sortedRanks = cards.map(value => values.indexOf(value)).sort((left, right) => left - right);
+      } while (sortedRanks.join(',') === '0,1,2,3,12' ||
+        sortedRanks.every((rank, index) => index === 0 || rank === sortedRanks[index - 1] + 1));
+      return createMixedSuitHand(cards);
     }
     case 'random': {
-      return Array.from({length: 5}, () => createCard(getRandom(values), getRandom(suits)));
+      const deck = values.flatMap(value => suits.map(suit => createCard(value, suit)));
+      return getSample(deck, 5);
     }
     default: return null;
   }

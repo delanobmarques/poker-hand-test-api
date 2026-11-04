@@ -134,7 +134,11 @@ pokerhand-api/
 ### Scripts
 - `npm start` - Start the server in production mode
 - `npm run dev` - Start the server in development mode with auto-restart
-- `npm test` - Run tests (not implemented yet)
+- `npm test` - Test all endpoints over HTTP (requires Node.js 18 or higher)
+
+Tests start and stop an isolated server on an available port. They check repeated
+requests for every hand type, card data and uniqueness, case-insensitive names,
+unknown hands, and straight generation after other hand types have been requested.
 
 ### Adding New Hand Types
 

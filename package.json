@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "pokerhand_test_api.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test pokerhand_test_api.test.js",
     "start": "node pokerhand_test_api.js",
     "dev": "nodemon pokerhand_test_api.js"
   },
